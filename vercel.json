@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/proxy" },
+    { "source": "/img",        "destination": "/api/img"   },
+    { "source": "/(.*)",       "destination": "/index.html" }
+  ]
+}
