@@ -13,7 +13,10 @@ const MangaCard = ({ a, onClick, index }) => {
     <div onClick={onClick} className={`w-full flex flex-col gap-2 group cursor-pointer active:scale-95 transition-all duration-500 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
       <div className="relative aspect-[3/4.5] w-full overflow-hidden bg-[#16161a] rounded-sm shadow-xl">
         <img src={imgUrl(a.cover_url)} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={a.title} />
-        {a.rating && <div className="absolute top-1 left-1 bg-black/60 text-[#F6CF80] text-[8px] font-black px-1.5 py-0.5 rounded-sm">★ {parseFloat(a.rating).toFixed(1)}</div>}
+        {a.rating && <div className="absolute top-1 left-1 bg-black/60 text-[#F6CF80] text-[8px] font-black px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
+          <svg className="w-2 h-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          {parseFloat(a.rating).toFixed(1)}
+        </div>}
         {a.type && <div className="absolute bottom-1 right-1 bg-white/10 text-white/80 text-[8px] font-bold px-1.5 py-0.5 rounded-sm uppercase">{a.type}</div>}
       </div>
       <h3 className="text-[9px] font-bold text-white/60 line-clamp-1 group-hover:text-[#F6CF80] transition-colors">{a.title}</h3>
@@ -21,6 +24,11 @@ const MangaCard = ({ a, onClick, index }) => {
   );
 };
 
+const FilterBtn = ({ active, onClick, children }) => (
+  <button onClick={onClick} className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-colors whitespace-nowrap ${active ? 'bg-[#F6CF80] text-black' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white'}`}>{children}</button>
+);
+
+const STATUSES = [['all','Semua'],['ongoing','Ongoing'],['completed','Completed'],['hiatus','Hiatus']];
 const LIMIT = 24;
 
 const Explore = () => {
@@ -29,6 +37,7 @@ const Explore = () => {
   const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const [results, setResults] = useState([]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +48,7 @@ const Explore = () => {
     apiFetch('/genres').then(r => setGenres(Array.isArray(r.data) ? r.data : [])).catch(() => {});
   }, []);
 
-  useEffect(() => { setPage(0); }, [query, selectedGenre]);
+  useEffect(() => { setPage(0); }, [query, selectedGenre, filterStatus]);
 
   useEffect(() => {
     let alive = true;
@@ -50,6 +59,7 @@ const Explore = () => {
         if (query) qs += `&search=${encodeURIComponent(query)}&sort=latest_chapter`;
         else if (selectedGenre) qs += `&genre=${encodeURIComponent(selectedGenre)}&sort=latest_chapter`;
         else qs += `&sort=popular`;
+        if (filterStatus !== 'all') qs += `&status=${filterStatus}`;
         const res = await apiFetch('/manga?' + qs);
         if (!alive) return;
         setResults(Array.isArray(res.data) ? res.data : []);
@@ -59,7 +69,7 @@ const Explore = () => {
     };
     load();
     return () => { alive = false; };
-  }, [page, query, selectedGenre]);
+  }, [page, query, selectedGenre, filterStatus]);
 
   const totalPages = Math.max(1, Math.ceil(total / LIMIT));
 
@@ -69,31 +79,37 @@ const Explore = () => {
       <Navbar />
       <div className="pt-24 max-w-7xl mx-auto px-6">
 
+        {query && (
+          <div className="mb-6">
+            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Hasil untuk:</p>
+            <span className="text-[#F6CF80] text-2xl font-black tracking-tighter">"{query}"</span>
+          </div>
+        )}
+
+        {/* Status filter */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar mb-4">
+          <span className="text-white/30 text-[9px] font-black uppercase tracking-widest shrink-0">Status</span>
+          {STATUSES.map(([v, l]) => <FilterBtn key={v} active={filterStatus === v} onClick={() => setFilterStatus(v)}>{l}</FilterBtn>)}
+        </div>
+
+        {/* Genre filter */}
         {!query && genres.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-white font-black uppercase mb-4 text-sm tracking-wide">Filter Genre</h2>
+          <div className="mb-6">
             <div className="flex overflow-x-auto gap-2 pb-2 no-scrollbar">
-              <button onClick={() => setSelectedGenre('')} className={`px-4 py-2 text-[10px] whitespace-nowrap font-bold rounded-xl transition-colors ${!selectedGenre ? 'bg-[#F6CF80] text-black' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white'}`}>Semua</button>
+              <button onClick={() => setSelectedGenre('')} className={`px-3 py-1.5 text-[10px] whitespace-nowrap font-bold rounded-lg transition-colors ${!selectedGenre ? 'bg-[#F6CF80] text-black' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white'}`}>Semua Genre</button>
               {genres.map(g => (
-                <button key={g.slug} onClick={() => setSelectedGenre(g.slug)} className={`px-4 py-2 text-[10px] whitespace-nowrap font-bold rounded-xl transition-colors ${selectedGenre === g.slug ? 'bg-[#F6CF80] text-black' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white'}`}>
-                  {g.name} <span className="opacity-50">({g.manga_count || 0})</span>
+                <button key={g.slug} onClick={() => setSelectedGenre(g.slug)} className={`px-3 py-1.5 text-[10px] whitespace-nowrap font-bold rounded-lg transition-colors ${selectedGenre === g.slug ? 'bg-[#F6CF80] text-black' : 'bg-white/5 border border-white/10 text-white/50 hover:text-white'}`}>
+                  {g.name}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {query && (
-          <div className="mb-8">
-            <h2 className="text-white/40 text-xs font-bold uppercase tracking-widest">Hasil untuk:</h2>
-            <span className="text-[#F6CF80] text-2xl font-black uppercase tracking-tighter">"{query}"</span>
-          </div>
-        )}
-
         {selectedGenre && !query && (
-          <div className="mb-8 flex items-center gap-3">
-            <span className="text-[#F6CF80] text-lg font-black uppercase">{genres.find(g => g.slug === selectedGenre)?.name}</span>
-            <button onClick={() => setSelectedGenre('')} className="text-white/30 hover:text-white text-xs font-black">✕ Clear</button>
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-[#F6CF80] text-base font-black uppercase">{genres.find(g => g.slug === selectedGenre)?.name}</span>
+            <button onClick={() => setSelectedGenre('')} className="text-white/30 hover:text-white text-xs font-black">✕</button>
           </div>
         )}
 
@@ -103,7 +119,7 @@ const Explore = () => {
         </div>
 
         {!isLoading && results.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
+          <div className="flex flex-col items-center justify-center py-24">
             <p className="text-white/40 font-bold text-sm">Tidak ditemukan</p>
           </div>
         )}
