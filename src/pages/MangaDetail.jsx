@@ -44,9 +44,12 @@ const MangaDetail = () => {
         setManga(data);
         document.title = `${data.title} - Miruro`;
 
-        // Fetch comments
+        // Fetch comments — response: { comments: [], total, hasMore }
         apiFetch(`/manga/${data.id}/comments?page=1&limit=15`)
-          .then(c => setComments(Array.isArray(c.data) ? c.data : []))
+          .then(c => {
+            const list = c.data?.comments || c.data?.data || (Array.isArray(c.data) ? c.data : []);
+            setComments(list);
+          })
           .catch(() => {});
 
         // Fetch related (manga from same first genre)
