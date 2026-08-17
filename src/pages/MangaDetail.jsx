@@ -243,18 +243,24 @@ const MangaDetail = () => {
               {comments.map((c, i) => (
                 <div key={i} className="bg-[#16161a] border border-white/5 rounded-sm px-4 py-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 rounded-full bg-[#F6CF80]/20 flex items-center justify-center shrink-0">
-                      <span className="text-[#F6CF80] text-[9px] font-black uppercase">
-                        {(c.users?.username || 'A')[0]}
-                      </span>
-                    </div>
-                    <span className="text-[#F6CF80] text-xs font-black">{c.users?.username || 'Anonymous'}</span>
+                    {c.avatar_url ? (
+                      <img src={c.avatar_url} className="w-6 h-6 rounded-full object-cover shrink-0" alt="" onError={e => e.target.style.display='none'} />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-[#F6CF80]/20 flex items-center justify-center shrink-0">
+                        <span className="text-[#F6CF80] text-[9px] font-black uppercase">{(c.username || 'A')[0]}</span>
+                      </div>
+                    )}
+                    <span className="text-[#F6CF80] text-xs font-black">{c.full_name || c.username || 'Anonymous'}</span>
+                    <span className="text-white/30 text-[9px]">@{c.username}</span>
                     {c.created_at && (
                       <span className="text-white/20 text-[9px] font-bold ml-auto">
                         {new Date(c.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </span>
                     )}
                   </div>
+                  {c.reply_to_username && (
+                    <p className="text-[#F6CF80]/50 text-[10px] mb-1">↩ @{c.reply_to_username}</p>
+                  )}
                   <p className="text-white/60 text-xs leading-relaxed">{c.content || ''}</p>
                 </div>
               ))}
