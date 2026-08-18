@@ -130,70 +130,73 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Carousel — VoraToon style */}
-      <header className="relative w-full overflow-hidden bg-[#0f0f12]" style={{ minHeight: '320px', maxHeight: '460px', height: '55vw' }}>
+      <header className="relative w-full overflow-hidden bg-[#0f0f12]" style={{ height: 'clamp(280px, 56vw, 460px)' }}>
         {isLoading ? (
           <div className="w-full h-full bg-[#16161a] relative overflow-hidden"><Shimmer /></div>
         ) : (
           <>
-            <div className={`flex h-full ${transitioning ? 'transition-transform duration-700' : ''}`} style={{ transform: `translate3d(-${heroIdx * 100}%,0,0)` }}>
+            <div className={`flex h-full ${transitioning ? 'transition-transform duration-700' : ''}`}
+              style={{ transform: `translate3d(-${heroIdx * 100}%,0,0)` }}>
               {carousel.map((item, i) => {
                 const slug = getSlug(item);
                 const cover = getCover(item);
                 return (
-                  <div key={i} className="min-w-full h-full relative overflow-hidden cursor-pointer" onClick={() => slug && navigate(`/manga/${slug}`)}>
-                    {/* Background blur */}
-                    <img src={cover} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0c]/95 via-[#0a0a0c]/60 to-[#0a0a0c]/20" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent" />
+                  <div key={i} className="min-w-full h-full relative overflow-hidden cursor-pointer"
+                    onClick={() => slug && navigate(`/manga/${slug}`)}>
 
-                    {/* Content */}
-                    <div className="relative z-10 h-full flex items-center px-6 md:px-12 gap-5 md:gap-8">
-                      {/* Book cover */}
-                      <div className="shrink-0" style={{ width: 'clamp(90px, 22vw, 160px)' }}>
-                        <img src={cover} alt={item.title}
-                          className="w-full aspect-[3/4.2] object-cover rounded-lg shadow-[0_8px_40px_rgba(0,0,0,0.7),4px_0_0_rgba(0,0,0,0.3),-2px_0_0_rgba(255,255,255,0.05)]" />
-                      </div>
+                    {/* Background artwork */}
+                    <img src={cover} className="absolute inset-0 w-full h-full object-cover scale-105" alt="" style={{ opacity: 0.35 }} />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(10,10,12,0.85) 0%, rgba(10,10,12,0.5) 50%, rgba(10,10,12,0.7) 100%)' }} />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,10,12,1) 0%, transparent 40%)' }} />
 
-                      {/* Info */}
-                      <div className="flex flex-col gap-2 min-w-0 flex-1">
-                        {/* Status/type pill */}
-                        {(item.status || item.type) && (
-                          <div className="flex gap-1.5 flex-wrap">
-                            {item.status && <span className="bg-[#F472B6]/20 border border-[#F472B6]/40 text-[#F472B6] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{item.status}</span>}
-                            {item.type && <span className="bg-white/10 border border-white/20 text-white/70 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{item.type}</span>}
+                    {/* Main content */}
+                    <div className="absolute inset-0 flex items-center justify-center gap-4 px-4" style={{ paddingBottom: '36px' }}>
+
+                      {/* Stats pills — left */}
+                      <div className="flex flex-col gap-1.5 shrink-0" style={{ minWidth: '72px' }}>
+                        {item.rating && (
+                          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-black text-xs text-white" style={{ background: '#f97316' }}>
+                            <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            {parseFloat(item.rating).toFixed(1)}
                           </div>
                         )}
-
-                        {/* Title */}
-                        <h2 className="font-black text-white leading-tight tracking-tight line-clamp-2" style={{ fontSize: 'clamp(14px, 4vw, 26px)' }}>
-                          {item.title || ''}
-                        </h2>
-
-                        {/* Stats pills */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {item.rating && (
-                            <span className="flex items-center gap-1 bg-yellow-400/20 text-yellow-300 text-[9px] font-black px-2 py-1 rounded-md">
-                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                              {parseFloat(item.rating).toFixed(1)}
-                            </span>
-                          )}
-                          {item.views && (
-                            <span className="flex items-center gap-1 bg-cyan-400/20 text-cyan-300 text-[9px] font-black px-2 py-1 rounded-md">
-                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                              {fmtNum(item.views)}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Read button */}
-                        {slug && (
-                          <button onClick={e => { e.stopPropagation(); navigate(`/manga/${slug}`); }}
-                            className="mt-1 h-8 px-5 bg-[#F472B6] hover:bg-[#e879b3] text-black rounded-lg font-black tracking-wider text-[10px] flex items-center gap-1.5 w-fit transition-colors uppercase shadow-[0_4px_20px_rgba(244,114,182,0.4)]">
-                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                            Baca Sekarang
-                          </button>
+                        {item.views && (
+                          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-black text-xs text-white" style={{ background: '#0891b2' }}>
+                            <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            {fmtNum(item.views)}
+                          </div>
+                        )}
+                        {item.status && (
+                          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-black text-xs text-white" style={{ background: '#16a34a' }}>
+                            <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {item.status}
+                          </div>
+                        )}
+                        {item.type && (
+                          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md font-black text-xs text-white" style={{ background: '#7c3aed' }}>
+                            <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            {item.type}
+                          </div>
                         )}
                       </div>
+
+                      {/* Book cover — center */}
+                      <div className="shrink-0 relative" style={{ width: 'clamp(110px, 26vw, 180px)' }}>
+                        <img src={cover} alt={item.title}
+                          className="w-full aspect-[3/4.2] object-cover rounded-lg"
+                          style={{ boxShadow: '6px 6px 30px rgba(0,0,0,0.8), -2px 0 0 rgba(255,255,255,0.08), 2px 0 8px rgba(0,0,0,0.5)' }} />
+                      </div>
+
+                      {/* Right spacer — buat balance */}
+                      <div style={{ minWidth: '72px' }} className="hidden md:block" />
+                    </div>
+
+                    {/* Title + genre tags — bottom */}
+                    <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 px-4 z-10">
+                      <h2 className="text-white font-black text-center line-clamp-1 drop-shadow-lg"
+                        style={{ fontSize: 'clamp(11px, 3vw, 16px)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+                        {item.title || ''}
+                      </h2>
                     </div>
                   </div>
                 );
@@ -202,12 +205,12 @@ const Home = () => {
 
             {/* Dot indicators */}
             {heroItems.length > 1 && (
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-20">
+              <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
                 {heroItems.map((_, i) => {
                   const active = i === heroIdx % heroItems.length;
                   return (
                     <button key={i} onClick={() => setHeroIdx(i)}
-                      className={`rounded-full transition-all duration-300 ${active ? 'w-5 h-1.5 bg-[#F472B6]' : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'}`} />
+                      className={`rounded-full transition-all duration-300 ${active ? 'w-5 h-1.5 bg-[#F472B6]' : 'w-1.5 h-1.5 bg-white/30'}`} />
                   );
                 })}
               </div>
