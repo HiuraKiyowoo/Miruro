@@ -378,7 +378,7 @@ function VoratoonHeroCarousel({ items = [], isLoading, navigate, imgUrl }) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className="vt-track flex snap-x snap-mandatory items-center overflow-x-auto overscroll-x-contain px-[7.5%] py-5 scroll-smooth md:px-[20%]"
+        className="vt-track flex snap-x snap-mandatory items-center overflow-x-auto overscroll-x-contain px-[6%] py-6 scroll-smooth md:px-[17%]"
         style={{ touchAction: "pan-x", cursor: "grab" }}
       >
         {slides.map(({ item, realIndex, clone }, index) => {
@@ -390,7 +390,7 @@ function VoratoonHeroCarousel({ items = [], isLoading, navigate, imgUrl }) {
               data-vt-real={realIndex}
               data-vt-clone={clone || undefined}
               aria-hidden={clone ? "true" : undefined}
-              className={`vt-card relative -mx-2.5 aspect-[720/380] max-w-[720px] flex-[0_0_85%] snap-center overflow-hidden bg-[#0d0d10] shadow-[0_10px_30px_rgba(0,0,0,.5)] transition-all duration-[400ms] [transition-timing-function:cubic-bezier(.25,1,.5,1)] md:-mx-[15px] md:flex-[0_0_60%] ${isActive ? "z-20 scale-100 opacity-100 shadow-[0_18px_42px_rgba(0,0,0,.82)]" : "z-10 scale-[.88] opacity-45"}`}
+              className={`vt-card relative -mx-2.5 aspect-[16/9] max-w-[860px] flex-[0_0_88%] snap-center overflow-hidden bg-[#0d0d10] shadow-[0_10px_30px_rgba(0,0,0,.5)] transition-all duration-[400ms] [transition-timing-function:cubic-bezier(.25,1,.5,1)] md:-mx-[15px] md:flex-[0_0_66%] ${isActive ? "z-20 scale-100 opacity-100 shadow-[0_18px_42px_rgba(0,0,0,.82)]" : "z-10 scale-[.88] opacity-45"}`}
             >
               <img
                 src={getBanner(item)}
@@ -404,12 +404,12 @@ function VoratoonHeroCarousel({ items = [], isLoading, navigate, imgUrl }) {
               <div className="relative z-10 flex h-full items-center">
                 <img
                   src={getCover(item)}
-                  className="ml-[clamp(14px,5cqi,34px)] h-[66%] w-auto shrink-0 aspect-[9/16] rounded-md object-cover shadow-[4px_8px_20px_rgba(0,0,0,.65)]"
+                  className="ml-[clamp(16px,5.5cqi,38px)] h-[70%] w-auto shrink-0 aspect-[9/16] rounded-md object-cover shadow-[4px_8px_20px_rgba(0,0,0,.65)]"
                   draggable="false"
                   alt={`Cover ${item?.title || ""}`}
                 />
 
-                <div className="absolute bottom-[7%] left-[clamp(14px,5cqi,34px)] flex flex-wrap gap-1.5">
+                <div className="absolute bottom-[7%] left-[clamp(16px,5.5cqi,38px)] flex flex-wrap gap-1.5">
                   {(genres.length ? genres : [item?.type || "Komik"]).map(
                     genre => (
                       <span
