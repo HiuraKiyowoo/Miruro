@@ -20,12 +20,12 @@ const MangaCard = ({ a, onClick, badgeType }) => (
     <div className="relative aspect-[3/4.5] overflow-hidden bg-[#16161a] rounded-sm shadow-xl">
       <img src={imgUrl(a.cover_url)} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={a.title} />
       {badgeType === 'rating' && a.rating && (
-        <div className="absolute top-1 left-1 bg-black/70 text-[#F6CF80] text-[8px] font-black px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
+        <div className="absolute top-1 left-1 bg-black/70 text-[#F472B6] text-[8px] font-black px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
           <StarIcon /> {parseFloat(a.rating).toFixed(1)}
         </div>
       )}
       {badgeType === 'views' && a.views && (
-        <div className="absolute top-1 left-1 bg-black/70 text-[#F6CF80] text-[8px] font-black px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
+        <div className="absolute top-1 left-1 bg-black/70 text-[#F472B6] text-[8px] font-black px-1.5 py-0.5 rounded-sm flex items-center gap-0.5">
           <EyeIcon /> {fmtNum(a.views)}
         </div>
       )}
@@ -36,7 +36,7 @@ const MangaCard = ({ a, onClick, badgeType }) => (
       )}
       {a.type && <div className="absolute bottom-1 right-1 bg-white/10 text-white/80 text-[8px] font-bold px-1.5 py-0.5 rounded-sm uppercase">{a.type}</div>}
     </div>
-    <h3 className="text-[9px] font-bold text-white/60 line-clamp-1 group-hover:text-[#F6CF80] transition-colors">{a.title}</h3>
+    <h3 className="text-[9px] font-bold text-white/60 line-clamp-1 group-hover:text-[#F472B6] transition-colors">{a.title}</h3>
   </div>
 );
 
@@ -44,8 +44,8 @@ const SectionHeader = ({ title, sub, onMore, scrollRef }) => (
   <div className="flex items-center justify-between mb-4 px-2">
     <div className="flex flex-col cursor-pointer group" onClick={onMore}>
       <div className="flex items-center gap-2">
-        <h2 className="text-lg font-black text-white uppercase leading-none group-hover:text-[#F6CF80] transition-colors tracking-tight">{title}</h2>
-        <svg className="w-5 h-5 text-white/40 group-hover:text-[#F6CF80] transition-colors" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <h2 className="text-lg font-black text-white uppercase leading-none group-hover:text-[#F472B6] transition-colors tracking-tight">{title}</h2>
+        <svg className="w-5 h-5 text-white/40 group-hover:text-[#F472B6] transition-colors" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
       </div>
       <span className="text-[10px] text-white/40 mt-1 font-bold uppercase tracking-widest">{sub}</span>
     </div>
@@ -121,7 +121,7 @@ const Home = () => {
   const getCover = (item) => imgUrl(item.image_url || item.banner_url || item.cover_url || '');
 
   return (
-    <div className="min-h-screen bg-[#0a0a0c] font-nunito selection:bg-[#F6CF80] selection:text-black pb-24 text-white">
+    <div className="min-h-screen bg-[#0a0a0c] font-nunito selection:bg-[#F472B6] selection:text-black pb-24 text-white">
       <style>{`
         @keyframes shimmer{0%{transform:translate3d(-100%,0,0) skewX(-20deg)}100%{transform:translate3d(200%,0,0) skewX(-20deg)}}
         body,html{background-color:#0a0a0c!important;color:white;margin:0;padding:0;overscroll-behavior-y:none}
@@ -145,7 +145,7 @@ const Home = () => {
                     <h2 className="text-lg md:text-3xl font-black text-white tracking-tight leading-tight line-clamp-2">{item.title || ''}</h2>
                     <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest">{item.type || ''}</p>
                     {getSlug(item) && (
-                      <button onClick={() => navigate(`/manga/${getSlug(item)}`)} className="mt-2 h-8 px-5 bg-[#F6CF80] hover:bg-[#ebd59b] text-black rounded font-black tracking-wider text-[10px] flex items-center gap-1.5 w-fit transition-colors">
+                      <button onClick={() => navigate(`/manga/${getSlug(item)}`)} className="mt-2 h-8 px-5 bg-[#F472B6] hover:bg-[#e879b3] text-black rounded font-black tracking-wider text-[10px] flex items-center gap-1.5 w-fit transition-colors">
                         <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                         Baca
                       </button>
@@ -159,7 +159,7 @@ const Home = () => {
         {!isLoading && heroItems.length > 0 && (
           <div className="absolute bottom-6 right-6 flex items-center gap-2 z-20">
             <span className="text-[10px] font-black text-white">{(heroIdx % heroItems.length) + 1}/{heroItems.length}</span>
-            <button onClick={() => { if (transitioning) setHeroIdx(p => p + 1); }} className="text-white hover:text-[#F6CF80] transition-colors">
+            <button onClick={() => { if (transitioning) setHeroIdx(p => p + 1); }} className="text-white hover:text-[#F472B6] transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"/></svg>
             </button>
           </div>
