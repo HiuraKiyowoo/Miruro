@@ -136,8 +136,8 @@ const SectionHeader = ({ title, sub, onMore, scrollRef }) => (
 );
 
 /**
- * DARK COMIC CAROUSEL — kartu tengah aktif, side peek, stack statistik,
- * cover komik, loop saat swipe, dan tanpa panah pada Android.
+ * DARK COMIC CAROUSEL — kartu tengah aktif, side peek, cover 9:16 kiri-tengah,
+ * loop saat swipe, dan tanpa panah pada Android.
  *
  * Cara pakai di Home.jsx:
  * 1. Simpan file ini, lalu import VoratoonHeroCarousel dari path komponen ini.
@@ -147,35 +147,9 @@ const SectionHeader = ({ title, sub, onMore, scrollRef }) => (
  *      isLoading={isLoading}
  *      navigate={navigate}
  *      imgUrl={imgUrl}
- *      fmtNum={fmtNum}
  *    />
  * 3. Hapus state/effect lama: heroIdx, transitioning, carousel, dan tiga useEffect carousel.
  */
-
-const HeroStar = () => (
-  <svg
-    className="h-2 w-2 shrink-0"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-  </svg>
-);
-
-const HeroEye = () => (
-  <svg
-    className="h-2 w-2 shrink-0"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    aria-hidden="true"
-  >
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
 
 const Arrow = ({ direction }) => (
   <svg
@@ -194,13 +168,7 @@ const Arrow = ({ direction }) => (
   </svg>
 );
 
-function VoratoonHeroCarousel({
-  items = [],
-  isLoading,
-  navigate,
-  imgUrl,
-  fmtNum,
-}) {
+function VoratoonHeroCarousel({ items = [], isLoading, navigate, imgUrl }) {
   const trackRef = useRef(null);
   const activeRef = useRef(0);
   const dragRef = useRef({ active: false, startX: 0, startScrollLeft: 0 });
@@ -213,8 +181,6 @@ function VoratoonHeroCarousel({
     imgUrl(item?.banner_url || item?.image_url || item?.cover_url || "");
   const getCover = item =>
     imgUrl(item?.cover_url || item?.image_url || item?.banner_url || "");
-  const getSaveCount = item =>
-    item?.bookmarks || item?.favorites || item?.likes || item?.followers || 0;
   const getGenres = item => {
     const raw = item?.genres || item?.genre || item?.tags || [];
     const values = Array.isArray(raw) ? raw : String(raw).split(",");
@@ -376,8 +342,8 @@ function VoratoonHeroCarousel({
 
   if (isLoading) {
     return (
-      <header className="relative w-full min-h-[300px] aspect-[16/10] overflow-hidden bg-[#16161a]">
-        <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#16161a] via-white/5 to-[#16161a]" />
+      <header className="relative w-full min-h-[300px] aspect-[16/10] overflow-hidden bg-black">
+        <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-black via-white/5 to-black" />
       </header>
     );
   }
@@ -386,7 +352,7 @@ function VoratoonHeroCarousel({
 
   return (
     <header
-      className="vt-hero relative w-full overflow-hidden bg-[#0a0e17] py-1"
+      className="vt-hero relative w-full overflow-hidden bg-black py-1"
       aria-label="Banner seri pilihan"
     >
       <style>{`
@@ -401,7 +367,7 @@ function VoratoonHeroCarousel({
         type="button"
         onClick={goPrevious}
         aria-label="Banner sebelumnya"
-        className="absolute left-[max(12px,calc(50%-min(36vw,430px)))] top-1/2 z-30 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/10 bg-[#111827]/70 text-white shadow-xl backdrop-blur-sm transition hover:scale-110 hover:border-[#ff7f00] hover:bg-[#ff7f00] active:scale-95 md:grid"
+        className="absolute left-[max(12px,calc(50%-min(36vw,430px)))] top-1/2 z-30 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/10 bg-black/75 text-white shadow-xl backdrop-blur-sm transition hover:scale-110 hover:border-[#F472B6] hover:bg-[#F472B6] active:scale-95 md:grid"
       >
         <Arrow direction="prev" />
       </button>
@@ -418,17 +384,13 @@ function VoratoonHeroCarousel({
         {slides.map(({ item, realIndex, clone }, index) => {
           const genres = getGenres(item);
           const isActive = !clone && realIndex === activeIndex;
-          const rating = item?.rating ? Number(item.rating).toFixed(1) : "—";
-          const saved = getSaveCount(item);
-          const views = item?.views || item?.view_count || 0;
-
           return (
             <article
               key={`${clone || "real"}-${realIndex}-${index}`}
               data-vt-real={realIndex}
               data-vt-clone={clone || undefined}
               aria-hidden={clone ? "true" : undefined}
-              className={`vt-card relative -mx-2.5 aspect-[720/380] max-w-[720px] flex-[0_0_85%] snap-center overflow-hidden bg-[#111827] shadow-[0_10px_30px_rgba(0,0,0,.5)] transition-all duration-[400ms] [transition-timing-function:cubic-bezier(.25,1,.5,1)] md:-mx-[15px] md:flex-[0_0_60%] ${isActive ? "z-20 scale-100 opacity-100 shadow-[0_18px_42px_rgba(0,0,0,.82)]" : "z-10 scale-[.88] opacity-45"}`}
+              className={`vt-card relative -mx-2.5 aspect-[720/380] max-w-[720px] flex-[0_0_85%] snap-center overflow-hidden bg-[#0d0d10] shadow-[0_10px_30px_rgba(0,0,0,.5)] transition-all duration-[400ms] [transition-timing-function:cubic-bezier(.25,1,.5,1)] md:-mx-[15px] md:flex-[0_0_60%] ${isActive ? "z-20 scale-100 opacity-100 shadow-[0_18px_42px_rgba(0,0,0,.82)]" : "z-10 scale-[.88] opacity-45"}`}
             >
               <img
                 src={getBanner(item)}
@@ -437,37 +399,17 @@ function VoratoonHeroCarousel({
                 alt=""
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c]/65 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-              <div className="relative z-10 flex h-full max-w-[90%] flex-col justify-center py-[4%] pr-[4%]">
-                <div className="mb-[2%] flex h-[80%] items-center">
-                  <div className="z-10 flex flex-col gap-1.5">
-                    <span className="flex min-w-[95px] items-center gap-2 bg-[#f59e0b] py-1.5 pl-2.5 pr-2 text-[clamp(.52rem,1.8cqi,.75rem)] font-black text-white shadow-lg">
-                      <HeroStar />
-                      {rating}
-                    </span>
-                    <span className="flex min-w-[95px] items-center gap-2 bg-[#ec4899] py-1.5 pl-2.5 pr-2 text-[clamp(.52rem,1.8cqi,.75rem)] font-black text-white shadow-lg">
-                      <b aria-hidden="true">▮</b>
-                      {fmtNum(saved)}
-                    </span>
-                    <span className="flex min-w-[95px] items-center gap-2 bg-[#06b6d4] py-1.5 pl-2.5 pr-2 text-[clamp(.52rem,1.8cqi,.75rem)] font-black text-white shadow-lg">
-                      <HeroEye />
-                      {fmtNum(views)}
-                    </span>
-                    <span className="flex min-w-[95px] items-center gap-2 bg-[#10b981] py-1.5 pl-2.5 pr-2 text-[clamp(.52rem,1.8cqi,.75rem)] font-black text-white shadow-lg">
-                      <b aria-hidden="true">▥</b>#
-                      {String(realIndex + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <img
-                    src={getCover(item)}
-                    className="h-full w-auto shrink-0 rounded-lg object-cover shadow-[4px_8px_20px_rgba(0,0,0,.6)]"
-                    draggable="false"
-                    alt={`Cover ${item?.title || ""}`}
-                  />
-                </div>
+              <div className="relative z-10 flex h-full items-center">
+                <img
+                  src={getCover(item)}
+                  className="ml-[clamp(14px,5cqi,34px)] h-[66%] w-auto shrink-0 aspect-[9/16] rounded-md object-cover shadow-[4px_8px_20px_rgba(0,0,0,.65)]"
+                  draggable="false"
+                  alt={`Cover ${item?.title || ""}`}
+                />
 
-                <div className="flex flex-wrap gap-1.5 pl-[2.5cqi]">
+                <div className="absolute bottom-[7%] left-[clamp(14px,5cqi,34px)] flex flex-wrap gap-1.5">
                   {(genres.length ? genres : [item?.type || "Komik"]).map(
                     genre => (
                       <span
@@ -499,7 +441,7 @@ function VoratoonHeroCarousel({
         type="button"
         onClick={goNext}
         aria-label="Banner berikutnya"
-        className="absolute right-[max(12px,calc(50%-min(36vw,430px)))] top-1/2 z-30 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/10 bg-[#111827]/70 text-white shadow-xl backdrop-blur-sm transition hover:scale-110 hover:border-[#ff7f00] hover:bg-[#ff7f00] active:scale-95 md:grid"
+        className="absolute right-[max(12px,calc(50%-min(36vw,430px)))] top-1/2 z-30 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/10 bg-black/75 text-white shadow-xl backdrop-blur-sm transition hover:scale-110 hover:border-[#F472B6] hover:bg-[#F472B6] active:scale-95 md:grid"
       >
         <Arrow direction="next" />
       </button>
@@ -515,7 +457,7 @@ function VoratoonHeroCarousel({
             onClick={() => goTo(index)}
             aria-label={`Tampilkan banner ${index + 1}`}
             aria-current={activeIndex === index}
-            className={`h-1.5 rounded-full transition-all ${activeIndex === index ? "w-6 bg-[#ff7f00] shadow-[0_0_10px_rgba(255,127,0,.55)]" : "w-1.5 bg-white/25"}`}
+            className={`h-1.5 rounded-full transition-all ${activeIndex === index ? "w-6 bg-[#F472B6] shadow-[0_0_10px_rgba(244,114,182,.7)]" : "w-1.5 bg-white/25"}`}
           />
         ))}
       </div>
@@ -567,10 +509,10 @@ const Home = () => {
 
   const heroItems = (banners.length > 0 ? banners : popular).slice(0, 8);
   return (
-    <div className="min-h-screen bg-[#0a0a0c] font-nunito selection:bg-[#F472B6] selection:text-black pb-24 text-white">
+    <div className="min-h-screen bg-black font-nunito selection:bg-[#F472B6] selection:text-black pb-24 text-white">
       <style>{`
         @keyframes shimmer{0%{transform:translate3d(-100%,0,0) skewX(-20deg)}100%{transform:translate3d(200%,0,0) skewX(-20deg)}}
-        body,html{background-color:#0a0a0c!important;color:white;margin:0;padding:0;overscroll-behavior-y:none}
+        body,html{background-color:#000!important;color:white;margin:0;padding:0;overscroll-behavior-y:none}
         .cscroll::-webkit-scrollbar{height:4px}.cscroll::-webkit-scrollbar-track{background:transparent}.cscroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:10px}
       `}</style>
       <Navbar />
@@ -580,7 +522,6 @@ const Home = () => {
         isLoading={isLoading}
         navigate={navigate}
         imgUrl={imgUrl}
-        fmtNum={fmtNum}
       />
 
       <section className="max-w-7xl mx-auto px-6 mt-12">
