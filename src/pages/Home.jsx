@@ -129,40 +129,90 @@ const Home = () => {
       `}</style>
       <Navbar />
 
-      {/* Hero Carousel */}
-      <header className="relative w-full aspect-[16/10] md:aspect-video min-h-[300px] md:max-h-[550px] overflow-hidden bg-[#0f0f12]">
+      {/* Hero Carousel — VoraToon style */}
+      <header className="relative w-full overflow-hidden bg-[#0f0f12]" style={{ minHeight: '320px', maxHeight: '460px', height: '55vw' }}>
         {isLoading ? (
           <div className="w-full h-full bg-[#16161a] relative overflow-hidden"><Shimmer /></div>
         ) : (
-          <div className={`flex h-full ${transitioning ? 'transition-transform duration-700' : ''}`} style={{ transform: `translate3d(-${heroIdx * 100}%,0,0)` }}>
-            {carousel.map((item, i) => (
-              <div key={i} className="min-w-full h-full relative">
-                <img src={getCover(item)} className="w-full h-full object-cover opacity-60" loading={i > 0 ? 'lazy' : 'eager'} alt="" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-[#0a0a0c]/40 to-transparent" />
-                <div className="absolute bottom-6 left-6 md:bottom-12 md:left-12 flex items-end gap-4 z-10 w-[calc(100%-48px)] max-w-7xl pr-8">
-                  <img src={getCover(item)} className="w-24 md:w-40 aspect-[3/4.2] object-cover rounded-md shadow-2xl shrink-0" alt="" />
-                  <div className="flex flex-col text-left mb-1 gap-1 flex-1 min-w-0">
-                    <h2 className="text-lg md:text-3xl font-black text-white tracking-tight leading-tight line-clamp-2">{item.title || ''}</h2>
-                    <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest">{item.type || ''}</p>
-                    {getSlug(item) && (
-                      <button onClick={() => navigate(`/manga/${getSlug(item)}`)} className="mt-2 h-8 px-5 bg-[#F472B6] hover:bg-[#e879b3] text-black rounded font-black tracking-wider text-[10px] flex items-center gap-1.5 w-fit transition-colors">
-                        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                        Baca
-                      </button>
-                    )}
+          <>
+            <div className={`flex h-full ${transitioning ? 'transition-transform duration-700' : ''}`} style={{ transform: `translate3d(-${heroIdx * 100}%,0,0)` }}>
+              {carousel.map((item, i) => {
+                const slug = getSlug(item);
+                const cover = getCover(item);
+                return (
+                  <div key={i} className="min-w-full h-full relative overflow-hidden cursor-pointer" onClick={() => slug && navigate(`/manga/${slug}`)}>
+                    {/* Background blur */}
+                    <img src={cover} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0c]/95 via-[#0a0a0c]/60 to-[#0a0a0c]/20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent" />
+
+                    {/* Content */}
+                    <div className="relative z-10 h-full flex items-center px-6 md:px-12 gap-5 md:gap-8">
+                      {/* Book cover */}
+                      <div className="shrink-0" style={{ width: 'clamp(90px, 22vw, 160px)' }}>
+                        <img src={cover} alt={item.title}
+                          className="w-full aspect-[3/4.2] object-cover rounded-lg shadow-[0_8px_40px_rgba(0,0,0,0.7),4px_0_0_rgba(0,0,0,0.3),-2px_0_0_rgba(255,255,255,0.05)]" />
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex flex-col gap-2 min-w-0 flex-1">
+                        {/* Status/type pill */}
+                        {(item.status || item.type) && (
+                          <div className="flex gap-1.5 flex-wrap">
+                            {item.status && <span className="bg-[#F472B6]/20 border border-[#F472B6]/40 text-[#F472B6] text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{item.status}</span>}
+                            {item.type && <span className="bg-white/10 border border-white/20 text-white/70 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">{item.type}</span>}
+                          </div>
+                        )}
+
+                        {/* Title */}
+                        <h2 className="font-black text-white leading-tight tracking-tight line-clamp-2" style={{ fontSize: 'clamp(14px, 4vw, 26px)' }}>
+                          {item.title || ''}
+                        </h2>
+
+                        {/* Stats pills */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {item.rating && (
+                            <span className="flex items-center gap-1 bg-yellow-400/20 text-yellow-300 text-[9px] font-black px-2 py-1 rounded-md">
+                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                              {parseFloat(item.rating).toFixed(1)}
+                            </span>
+                          )}
+                          {item.views && (
+                            <span className="flex items-center gap-1 bg-cyan-400/20 text-cyan-300 text-[9px] font-black px-2 py-1 rounded-md">
+                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                              {fmtNum(item.views)}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Read button */}
+                        {slug && (
+                          <button onClick={e => { e.stopPropagation(); navigate(`/manga/${slug}`); }}
+                            className="mt-1 h-8 px-5 bg-[#F472B6] hover:bg-[#e879b3] text-black rounded-lg font-black tracking-wider text-[10px] flex items-center gap-1.5 w-fit transition-colors uppercase shadow-[0_4px_20px_rgba(244,114,182,0.4)]">
+                            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                            Baca Sekarang
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                );
+              })}
+            </div>
+
+            {/* Dot indicators */}
+            {heroItems.length > 1 && (
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-20">
+                {heroItems.map((_, i) => {
+                  const active = i === heroIdx % heroItems.length;
+                  return (
+                    <button key={i} onClick={() => setHeroIdx(i)}
+                      className={`rounded-full transition-all duration-300 ${active ? 'w-5 h-1.5 bg-[#F472B6]' : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'}`} />
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        )}
-        {!isLoading && heroItems.length > 0 && (
-          <div className="absolute bottom-6 right-6 flex items-center gap-2 z-20">
-            <span className="text-[10px] font-black text-white">{(heroIdx % heroItems.length) + 1}/{heroItems.length}</span>
-            <button onClick={() => { if (transitioning) setHeroIdx(p => p + 1); }} className="text-white hover:text-[#F472B6] transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
+            )}
+          </>
         )}
       </header>
 
